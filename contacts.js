@@ -37,9 +37,22 @@ const removeContact = async (contactId) => {
   }
 }
 
-const addContact = async (name, email, phone) => {
+const addContact = async ({name, email, phone}) => {
+  try {
+    const contacts = await listContacts();
+    const newContact = {
+      id: nanoid(),
+      name: name,
+      email: email,
+      phone: phone,
+    };
+    const newContacts = [...contacts, newContact];
+    await fs.writeFile(contactsPath, JSON.stringify(newContacts,null,2))
+    return newContact;
   
+  } catch (error) {
+    console.error(error.message)
+  }
 }
 
-
-console.log(await removeContact('1'))
+export { listContacts, getContactById, removeContact, addContact };
